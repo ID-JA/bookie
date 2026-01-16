@@ -1,0 +1,2 @@
+MONGO_URI="mongodb+srv://<user>:<password>@cluster0.xyz.mongodb.net/?appName=Cluster0"
+DB_NAME="reservations"
