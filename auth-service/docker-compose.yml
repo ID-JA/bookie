@@ -1,0 +1,36 @@
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotel-auth-service
+    ports:
+      - '3001:3001'
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/hotel-auth
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - JWT_EXPIRES_IN=3600
+      - PORT=3001
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - hotel-network
+
+  mongo:
+    image: mongo:7
+    container_name: hotel-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - hotel-network
+
+volumes:
+  mongo-data:
+
+networks:
+  hotel-network:
+    driver: bridge
