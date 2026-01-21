@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 1. RabbitMQ Service (The Messenger)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_broker
+    ports:
+      - "5672:5672"   # Port for Python to connect
+      - "15672:15672" # Port for the Web Dashboard
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Notification Service (The Worker)
+  notification_service:
+    build: .
+    container_name: notification_service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      # ✅ MongoDB Connection (Using the working 'app_user')
+      - MONGO_URI=mongodb+srv://app_user:secure123@cluster0.iuuhoje.mongodb.net/notification_db?appName=Cluster0&authSource=admin
+      
+      # ✅ RabbitMQ Host
+      - RABBITMQ_HOST=rabbitmq
+      
+      # ✅ EMAIL CREDENTIALS (Your specific account)
+      - SMTP_SERVER=smtp.ethereal.email
+      - SMTP_PORT=587
+      - SMTP_EMAIL=colten.bogan9@ethereal.email
+      - SMTP_PASSWORD=ffT4Fv1taf9Cn8bufH
