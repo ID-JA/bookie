@@ -1,12 +1,14 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 
-WORKDIR /app
+WORKDIR /code
 
-COPY requirements.txt .
+COPY ./requirements.txt /code/requirements.txt   
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY . .
+RUN pip install 'pydantic[email]'
+
+COPY ./app /code/app
 
 # Expose the port the app runs on
 EXPOSE 8000

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web-app:
+    build: .
+    container_name: bookie-web-app
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3002
+    volumes:
+      - ./src:/app/src # Hot reload support
+      - ./public:/app/public
+    restart: unless-stopped
+    networks:
+      - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge

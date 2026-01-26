@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: .
+    container_name: api-gateway
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      # Using host.docker.internal to access other services running in separate Docker stacks/Host
+      - AUTH_SERVICE_URL=http://host.docker.internal:3001
+      - RESERVATION_SERVICE_URL=http://host.docker.internal:8001
+      - NOTIFICATION_SERVICE_URL=http://host.docker.internal:8000
+    restart: unless-stopped
+    networks:
+      - hotel-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  hotel-network:
+    driver: bridge

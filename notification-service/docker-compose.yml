@@ -13,18 +13,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hotel-network
 
   # 2. Notification Service (The Worker)
   notification_service:
     build: .
     container_name: notification_service
+    ports:
+      - "8000:8000"
     depends_on:
       rabbitmq:
         condition: service_healthy
+      mongo:
+        condition: service_started
     restart: on-failure
+    volumes:
+      - ./app:/code/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
-      # ✅ MongoDB Connection (Using the working 'app_user')
-      - MONGO_URI=mongodb+srv://app_user:secure123@cluster0.iuuhoje.mongodb.net/notification_db?appName=Cluster0&authSource=admin
+      # ✅ MongoDB Connection (Local Container)
+      - MONGO_URI=mongodb://mongo:27017/notification_db
       
       # ✅ RabbitMQ Host
       - RABBITMQ_HOST=rabbitmq
@@ -34,3 +43,23 @@ services:
       - SMTP_PORT=587
       - SMTP_EMAIL=colten.bogan9@ethereal.email
       - SMTP_PASSWORD=ffT4Fv1taf9Cn8bufH
+    networks:
+      - hotel-network
+
+  mongo:
+    image: mongo:7
+    container_name: notification-mongo
+    ports:
+      - '27018:27017' # Different host port to avoid conflict with auth-mongo
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - hotel-network
+
+volumes:
+  mongo-data:
+
+networks:
+  hotel-network:
+    driver: bridge

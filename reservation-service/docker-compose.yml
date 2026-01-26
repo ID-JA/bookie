@@ -3,13 +3,33 @@ version: '3.8'
 services:
   api:
     build: .
-    container_name: fastapi_atlas_service
+    container_name: reservation_service
     ports:
-      - "8000:8000"
-    env_file:
-      - .env  # This will load MONGO_URI safely
-    dns:
-      - 8.8.8.8
+      - "8001:8000" # Mapped to 8001 on host as per README
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/reservation_db
+    depends_on:
+      - mongo
+    networks:
+      - hotel-network
     volumes:
       - ./app:/code/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  mongo:
+    image: mongo:7
+    container_name: reservation-mongo
+    ports:
+      - '27019:27017' # Different host port
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - hotel-network
+
+volumes:
+  mongo-data:
+
+networks:
+  hotel-network:
+    driver: bridge
