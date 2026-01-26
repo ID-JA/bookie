@@ -1,0 +1,8 @@
+pymongo==4.4.1
+dnspython==2.3.0
+fastapi==0.111.1
+uvicorn[standard]==0.23.1
+python-dotenv==1.0.1
+motor
+pydantic
+email-validator

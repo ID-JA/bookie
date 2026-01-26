@@ -1,0 +1,23 @@
+.env
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checking
+.mypy_cache/
+
+# IDEs
+.vscode/
+.idea/
