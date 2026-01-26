@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # Include the reservation routes
-app.include_router(reservation_router, prefix="/api")
+app.include_router(reservation_router)
 
 @app.get("/")
 def read_root():
