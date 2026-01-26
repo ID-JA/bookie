@@ -21,3 +21,5 @@ htmlcov/
 # IDEs
 .vscode/
 .idea/
+
+uv.lock
